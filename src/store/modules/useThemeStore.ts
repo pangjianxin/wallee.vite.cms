@@ -14,8 +14,8 @@ export default defineStore(
       // 最顶部系统标题栏设置
       baseBackground: ["#F56C6C", "#F56C6C"],
       baseTextColor: ["#FFFFFF", "#FFFFFF"],
-      elHeaderHeight: 20,
-      elMainHeight: 89,
+      elHeaderHeight: 17,
+      elMainHeight: 82,
       /* 顶栏 */
       // 顶栏背景色
       navMenuBackground: ["#FFFFFF", "#FFFFFF"],

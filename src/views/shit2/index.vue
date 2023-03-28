@@ -1,16 +1,16 @@
 <template>
-  <div>111</div>
+  <div>1</div>
 </template>
 
 <script setup lang="ts"></script>
 
 <style scoped></style>
 <route lang="yaml">
-name: "shit"
+name: 导航样式
 meta: 
-  icon: "Setting"
   visible: true
-  requriedAuth: true
-  title: "导航实例"
-  description: "演示导航实例"
+  title: 导航样式
+  description: 导航样式
+  keepAlive: true
+  icon: User
 </route>

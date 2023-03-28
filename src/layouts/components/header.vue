@@ -1,16 +1,14 @@
 <template>
   <div class="header-wrapper">
-    <div class="header-logo">
-      <el-image class="header-img" :src="logo"> </el-image>
-      <div class="header-text">
-        <div class="header-title">
-          {{ appName }}
+    <el-row justify="center" style="width: 100%">
+      <el-col :lg="16" :sm="24" class="header-logo">
+        <el-image class="header-img" :src="header"> </el-image>
+        <div class="hader-action">
+          <el-button type="danger" icon="Avatar" plain>企业登录</el-button>
+          <el-button type="success" icon="Menu" plain>企业注册</el-button>
         </div>
-        <div class="header-subtitle">
-          {{ appEngName }}
-        </div>
-      </div>
-    </div>
+      </el-col>
+    </el-row>
     <menu-horizontal />
   </div>
 </template>
@@ -18,7 +16,7 @@
 <script setup lang="ts">
 import useThemeStore from "/@/store/modules/useThemeStore";
 import menuHorizontal from "/@/layouts/components/menu/menuHorizontal.vue";
-import logo from "/@/assets/img/logo_bg_w.png";
+import header from "/@/assets/img/header.png";
 import { computed } from "vue";
 const appName = import.meta.env["VITE_APP_NAME"];
 const appEngName = import.meta.env["VITE_APP_ENG_NAME"];
@@ -40,7 +38,7 @@ const theme = useThemeStore();
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: var(--ba-main-space) var(--ba-main-space);
     margin-bottom: 0;
     .header-img {
@@ -48,23 +46,10 @@ const theme = useThemeStore();
       margin-right: 2vmin;
       user-select: none;
     }
-    .header-text {
+    .header-action {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: end;
       align-items: center;
-      .header-title {
-        font-size: 2rem;
-        font-weight: 600;
-        line-height: 30px;
-        color: v-bind('theme.getColorVal("baseTextColor")');
-      }
-      .header-subtitle {
-        padding-top: 6px;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: v-bind('theme.getColorVal("baseTextColor")');
-      }
     }
   }
 }
