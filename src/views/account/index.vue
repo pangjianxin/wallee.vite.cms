@@ -1,14 +1,11 @@
-<route>
-    {
-      name:"account",
-        meta:{
-            title:"账户设置",
-            icon:"Document",
-            visible:true,
-            requiredAuth:true,
-            keepAlive:true
-        }
-    }
+<route lang="yaml">
+name: "account"
+meta:
+  title: "账户设置"
+  icon: "Document"
+  visible: true
+  requiredAuth: true
+  keepAlive: true
 </route>
 <template>
   <el-card>
@@ -80,12 +77,11 @@
 import { onMounted, ref, reactive } from "vue";
 import {
   ProfileService,
-  ProfileDto,
   UpdateProfileDto,
   ChangePasswordInput,
 } from "/@/openapi/index";
 import { FormRules, FormInstance, ElNotification } from "element-plus";
-import pageHeader from "/@/components/pageHeader.vue";
+import pageHeader from "/@/components/pageHeader/index.vue";
 let formRef = ref<FormInstance>();
 let profileForm: UpdateProfileDto = reactive({
   userName: "",
