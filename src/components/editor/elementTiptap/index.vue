@@ -1,179 +1,165 @@
 <template>
-  <div>
-    <div v-if="editor">
-      <button
-        @click="editor?.chain().focus().toggleBold().run()"
-        :disabled="!editor.can().chain().focus().toggleBold().run()"
-        :class="{ 'is-active': editor.isActive('bold') }"
-      >
-        <icon :name="'bold'"></icon>
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleItalic().run()"
-        :disabled="!editor.can().chain().focus().toggleItalic().run()"
-        :class="{ 'is-active': editor.isActive('italic') }"
-      >
-        <icon :name="'italic'"></icon>
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleStrike().run()"
-        :disabled="!editor.can().chain().focus().toggleStrike().run()"
-        :class="{ 'is-active': editor.isActive('strike') }"
-      >
-        <icon :name="'strikethrough'"></icon>
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleCode().run()"
-        :disabled="!editor.can().chain().focus().toggleCode().run()"
-        :class="{ 'is-active': editor.isActive('code') }"
-      >
-        <icon :name="'code'"></icon>
-      </button>
-      <button @click="editor?.chain().focus().unsetAllMarks().run()">
-        clear marks
-      </button>
-      <button @click="editor?.chain().focus().clearNodes().run()">
-        clear nodes
-      </button>
-      <button
-        @click="editor?.chain().focus().setParagraph().run()"
-        :class="{ 'is-active': editor.isActive('paragraph') }"
-      >
-        paragraph
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
-      >
-        h1
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
-      >
-        h2
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
-      >
-        h3
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 4 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
-      >
-        h4
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 5 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
-      >
-        h5
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleHeading({ level: 6 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
-      >
-        h6
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleBulletList().run()"
-        :class="{ 'is-active': editor.isActive('bulletList') }"
-      >
-        bullet list
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-        :class="{ 'is-active': editor.isActive('orderedList') }"
-      >
-        ordered list
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleCodeBlock().run()"
-        :class="{ 'is-active': editor.isActive('codeBlock') }"
-      >
-        code block
-      </button>
-      <button
-        @click="editor?.chain().focus().toggleBlockquote().run()"
-        :class="{ 'is-active': editor.isActive('blockquote') }"
-      >
-        blockquote
-      </button>
-      <button @click="editor?.chain().focus().setHorizontalRule().run()">
-        horizontal rule
-      </button>
-      <button @click="editor?.chain().focus().setHardBreak().run()">
-        hard break
-      </button>
-      <button
-        @click="editor?.chain().focus().undo().run()"
-        :disabled="!editor.can().chain().focus().undo().run()"
-      >
-        undo
-      </button>
-      <button
-        @click="editor?.chain().focus().redo().run()"
-        :disabled="!editor.can().chain().focus().redo().run()"
-      >
-        redo
-      </button>
-    </div>
-    <editor-content :editor="editor" />
+  <div class="editor" v-if="editor">
+    <menu-bar class="editor__header" :editor="editor" />
+    <editor-content class="editor__content" :editor="editor" />
+    <!-- <div class="editor__footer">
+      <div :class="`editor__status editor__status--${status}`">
+        <template v-if="status === 'connected'">
+          {{ editor.storage.collaborationCursor.users.length }} user{{
+            editor.storage.collaborationCursor.users.length === 1 ? "" : "s"
+          }}
+          online in {{ room }}
+        </template>
+        <template v-else> offline </template>
+      </div>
+      <div class="editor__name">
+        <button @click="setName">
+          {{ currentUser.name }}
+        </button>
+      </div>
+    </div> -->
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
+import CharacterCount from "@tiptap/extension-character-count";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
-import icon from "/@/components/editor/icon/index.vue";
-import { onMounted, onBeforeUnmount, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
+import MenuBar from "/@/components/editor/menuBar/index.vue";
+
 let editor = ref<Editor>();
-let props = defineProps({
-  content: {
-    type: String,
-    require: true,
-    default: "请输入内容进行编辑",
-  },
-});
-let emit = defineEmits(["update:content"]);
 
 onMounted(() => {
   editor.value = new Editor({
-    extensions: [StarterKit],
-    content: props.content,
-    onUpdate: ({ editor }) => {
-      emit("update:content", editor.getHTML());
-    },
+    extensions: [
+      StarterKit.configure({
+        history: false,
+      }),
+      CharacterCount.configure({
+        limit: 10000,
+      }),
+    ],
   });
-  console.log(actions.value);
-});
-
-let actions = computed(() => {
-  const extensionsManager = editor.value?.extensionManager;
-  return extensionsManager?.extensions.reduce((acc, extension) => {
-    const { button } = extension.options;
-    console.log(button);
-    if (!button || typeof button !== "function") return acc;
-    const menuBtnComponentSpec = button({
-      editor: editor.value,
-      t: undefined,
-      extension,
-    });
-    if (Array.isArray(menuBtnComponentSpec)) {
-      return [...acc, ...menuBtnComponentSpec];
-    }
-    return [...acc, menuBtnComponentSpec];
-  }, []);
-});
-
-onBeforeUnmount(() => {
-  editor.value?.destroy();
 });
 </script>
 
 <style lang="scss">
+.editor {
+  display: flex;
+  flex-direction: column;
+  max-height: 26rem;
+  color: #0d0d0d;
+  background-color: #fff;
+  border: 3px solid #0d0d0d;
+  border-radius: 0.75rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    padding: 0.25rem;
+    border-bottom: 3px solid #0d0d0d;
+  }
+
+  &__content {
+    padding: 1.25rem 1rem;
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__footer {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    white-space: nowrap;
+    border-top: 3px solid #0d0d0d;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0d0d0d;
+    white-space: nowrap;
+    padding: 0.25rem 0.75rem;
+  }
+
+  /* Some information about the status */
+  &__status {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+
+    &::before {
+      content: " ";
+      flex: 0 0 auto;
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: rgba(#0d0d0d, 0.5);
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    &--connecting::before {
+      background: #616161;
+    }
+
+    &--connected::before {
+      background: #b9f18d;
+    }
+  }
+
+  &__name {
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0d0d0d;
+      border-radius: 0.4rem;
+      padding: 0.25rem 0.5rem;
+
+      &:hover {
+        color: #fff;
+        background-color: #0d0d0d;
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+/* Give a remote user a caret */
+.collaboration-cursor__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  word-break: normal;
+  pointer-events: none;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  user-select: none;
+  color: #0d0d0d;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px 3px 3px 0;
+  white-space: nowrap;
+}
+
 /* Basic editor styles */
 .ProseMirror {
   > * + * {
@@ -214,9 +200,17 @@ onBeforeUnmount(() => {
     }
   }
 
+  mark {
+    background-color: #faf594;
+  }
+
   img {
     max-width: 100%;
     height: auto;
+  }
+
+  hr {
+    margin: 1rem 0;
   }
 
   blockquote {
@@ -228,6 +222,26 @@ onBeforeUnmount(() => {
     border: none;
     border-top: 2px solid rgba(#0d0d0d, 0.1);
     margin: 2rem 0;
+  }
+
+  ul[data-type="taskList"] {
+    list-style: none;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
   }
 }
 </style>
