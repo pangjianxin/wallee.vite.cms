@@ -31,6 +31,7 @@ declare module '@vue/runtime-core' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Icon: typeof import('./src/components/editor/icon/index.vue')['default']
+    ImageUploader: typeof import('./src/components/editor/imageUploader/index.vue')['default']
     MenuBar: typeof import('./src/components/editor/menuBar/index.vue')['default']
     MenuItem: typeof import('./src/components/editor/menuBar/menuItem.vue')['default']
     PageHeader: typeof import('./src/components/pageHeader/index.vue')['default']

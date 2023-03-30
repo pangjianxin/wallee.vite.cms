@@ -24,22 +24,32 @@
 <script lang="ts" setup>
 import CharacterCount from "@tiptap/extension-character-count";
 import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import { onMounted, ref } from "vue";
 import MenuBar from "/@/components/editor/menuBar/index.vue";
 
 let editor = ref<Editor>();
-
+let props = defineProps({
+  content: {
+    type: String,
+    require: true,
+  },
+});
+let emit = defineEmits(["update:content"]);
 onMounted(() => {
   editor.value = new Editor({
     extensions: [
-      StarterKit.configure({
-        history: false,
-      }),
+      StarterKit,
+      Image,
       CharacterCount.configure({
         limit: 10000,
       }),
     ],
+    content: props.content,
+    onUpdate: ({ editor }) => {
+      emit("update:content", editor.getHTML());
+    },
   });
 });
 </script>
@@ -51,16 +61,17 @@ onMounted(() => {
   max-height: 26rem;
   color: #0d0d0d;
   background-color: #fff;
-  border: 3px solid #0d0d0d;
+  border: 1px solid #0d0d0d;
   border-radius: 0.75rem;
 
   &__header {
     display: flex;
     align-items: center;
+    background-color: aliceblue;
     flex: 0 0 auto;
     flex-wrap: wrap;
     padding: 0.25rem;
-    border-bottom: 3px solid #0d0d0d;
+    border-bottom: 1px solid #0d0d0d;
   }
 
   &__content {
@@ -85,81 +96,10 @@ onMounted(() => {
     white-space: nowrap;
     padding: 0.25rem 0.75rem;
   }
-
-  /* Some information about the status */
-  &__status {
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-
-    &::before {
-      content: " ";
-      flex: 0 0 auto;
-      display: inline-block;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: rgba(#0d0d0d, 0.5);
-      border-radius: 50%;
-      margin-right: 0.5rem;
-    }
-
-    &--connecting::before {
-      background: #616161;
-    }
-
-    &--connected::before {
-      background: #b9f18d;
-    }
-  }
-
-  &__name {
-    button {
-      background: none;
-      border: none;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 600;
-      color: #0d0d0d;
-      border-radius: 0.4rem;
-      padding: 0.25rem 0.5rem;
-
-      &:hover {
-        color: #fff;
-        background-color: #0d0d0d;
-      }
-    }
-  }
 }
 </style>
 
 <style lang="scss">
-/* Give a remote user a caret */
-.collaboration-cursor__caret {
-  position: relative;
-  margin-left: -1px;
-  margin-right: -1px;
-  border-left: 1px solid #0d0d0d;
-  border-right: 1px solid #0d0d0d;
-  word-break: normal;
-  pointer-events: none;
-}
-
-/* Render the username above the caret */
-.collaboration-cursor__label {
-  position: absolute;
-  top: -1.4em;
-  left: -1px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  user-select: none;
-  color: #0d0d0d;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px 3px 3px 0;
-  white-space: nowrap;
-}
-
 /* Basic editor styles */
 .ProseMirror {
   > * + * {
