@@ -12,7 +12,6 @@ import { CancelablePromise } from "./CancelablePromise";
 import type { OnCancel } from "./CancelablePromise";
 import type { OpenAPIConfig } from "./OpenAPI";
 import { ElNotification } from "element-plus";
-import useCookie from "/@/store/modules/useCookie";
 
 const isDefined = <T>(
   value: T | null | undefined
@@ -156,13 +155,14 @@ const getHeaders = async (
   formData?: FormData
 ): Promise<Record<string, string>> => {
   const token = await resolve(options, config.TOKEN);
+  const username = await resolve(options, config.USERNAME);
+  const password = await resolve(options, config.PASSWORD);
   const additionalHeaders = await resolve(options, config.HEADERS);
   const formHeaders =
     (typeof formData?.getHeaders === "function" && formData?.getHeaders()) ||
     {};
 
   const headers = Object.entries({
-    Accept: "application/json",
     ...additionalHeaders,
     ...options.headers,
     ...formHeaders,
@@ -180,10 +180,10 @@ const getHeaders = async (
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  //   if (isStringWithValue(username) && isStringWithValue(password)) {
-  //     const credentials = base64(`${username}:${password}`);
-  //     headers["Authorization"] = `Basic ${credentials}`;
-  //   }
+  if (isStringWithValue(username) && isStringWithValue(password)) {
+    const credentials = base64(`${username}:${password}`);
+    headers["Authorization"] = `Basic ${credentials}`;
+  }
 
   if (options.body) {
     if (options.mediaType) {
@@ -195,10 +195,6 @@ const getHeaders = async (
     } else if (!isFormData(options.body)) {
       headers["Content-Type"] = "application/json";
     }
-  }
-
-  if (options.method != "GET") {
-    headers["RequestVerificationToken"] = useCookie().getAntiforgery();
   }
 
   return headers;
@@ -229,6 +225,7 @@ const sendRequest = async <T>(
     method: options.method,
     withCredentials: config.WITH_CREDENTIALS,
     cancelToken: source.token,
+    responseType: options.responseType,
   };
 
   onCancel(() => source.cancel("The user aborted a request."));
@@ -330,40 +327,21 @@ export const request = <T>(
           statusText: response.statusText,
           body: responseHeader ?? responseBody,
         };
-
         catchErrorCodes(options, result);
-
         resolve(result.body);
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        switch (error.status) {
-          case 401:
-            ElNotification({
-              type: "warning",
-              title: "提示",
-              message: "登录信息已过期，请重新登录",
-            });
-            // const router = useRouter();
-            // console.log(router);
-            // router.push("/login");
-            window.location.href = "/sys/login";
-            break;
-          case 403:
-            ElNotification({
-              type: "error",
-              title: "提示",
-              message: error.message,
-            });
-            break;
-          default:
-            ElNotification({
-              type: "warning",
-              title: "提示",
-              message: error.message,
-            });
-            break;
+        ElNotification({
+          type: "error",
+          title: "提示",
+          message: error.message,
+        });
+        if (error.status === 401) {
+          window.location.href = "/login";
         }
+      } else {
+        console.error(error);
       }
       reject(error);
     }
