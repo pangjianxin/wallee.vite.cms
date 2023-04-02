@@ -339,6 +339,7 @@ export const request = <T>(
         });
         if (error.status === 401) {
           window.location.href = "/login";
+
         }
       } else {
         console.error(error);

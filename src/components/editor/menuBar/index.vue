@@ -21,7 +21,6 @@
 <script lang="ts" setup>
 import MenuItem from "./menuItem.vue";
 import { Editor } from "@tiptap/vue-3";
-import * as setImage from "@tiptap/extension-image";
 
 let props = defineProps({
   editor: {
@@ -121,8 +120,20 @@ let items = [
   },
   {
     icon: "text-wrap",
-    title: "强制换行",
+    title: "段落内换行",
     action: () => props.editor.chain().focus().setHardBreak().run(),
+  },
+  {
+    icon: "image-add-line",
+    title: "插入图片",
+    action: () =>
+      props.editor
+        .chain()
+        .focus()
+        .setImage({
+          src: "https://fc4tn.baidu.com/it/u=1412605715,1419734725&fm=202",
+        })
+        .run(),
   },
   {
     icon: "format-clear",
@@ -132,11 +143,6 @@ let items = [
   },
   {
     type: "divider",
-  },
-  {
-    icon: "image-add-line",
-    title: "插入图片",
-    action: () => props.editor.chain().focus().setImage({ src: "" }).run(),
   },
 ];
 </script>

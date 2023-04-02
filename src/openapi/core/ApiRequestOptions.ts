@@ -22,4 +22,7 @@ export type ApiRequestOptions = {
   readonly responseType?: ResponseType;
   readonly responseHeader?: string;
   readonly errors?: Record<number, string>;
+
 };
+
+

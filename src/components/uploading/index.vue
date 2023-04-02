@@ -39,25 +39,19 @@
     <el-image-viewer
       v-if="dialogVisible"
       @close="imageView"
-      :url-list="[fileUrl]"
+      :url-list="[fileUrl as string]"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref, reactive, computed } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { ElNotification } from "element-plus";
-import { Plus } from "@element-plus/icons-vue";
 import type { UploadProps, UploadRequestOptions } from "element-plus";
 
-import {
-  FinancingFileService,
-  FinancingFileType,
-  FinancingFileDto,
-} from "/@/openapi/index";
+import { FileService, FileDto } from "/@/openapi/index";
 
 interface UploadFileProps {
-  uploadingFileType: FinancingFileType;
   id?: string; // 组件id ==> 非必传，当页面存在多个上传组件时必传（默认为upload）
   drag?: boolean; // 是否支持拖拽上传 ==> 非必传（默认为true）
   disabled?: boolean; // 是否禁用上传组件 ==> 非必传（默认为false）
@@ -68,7 +62,6 @@ interface UploadFileProps {
 // 接受父组件参数
 const props = withDefaults(defineProps<UploadFileProps>(), {
   id: "upload",
-  uploadingFileType: FinancingFileType._1,
   drag: true,
   disabled: false,
   fileSize: 5,
@@ -85,14 +78,15 @@ let fileUrl = computed(() => {
   }
   return null;
 });
-let fileUploadResult = ref<FinancingFileDto>({});
+
+let fileUploadResult = ref<FileDto>({});
 
 /**
  * @description 图片上传
  * @param options 上传的文件
  * */
 interface UploadEmits {
-  (e: "update:file", value: FinancingFileDto): void;
+  (e: "update:file", value: FileDto): void;
   (e: "check-validate"): void;
 }
 
@@ -100,10 +94,9 @@ const emit = defineEmits<UploadEmits>();
 
 const handleHttpUpload = async (options: UploadRequestOptions) => {
   try {
-    const result = await FinancingFileService.financingFileCreate(
-      props.uploadingFileType,
-      { File: options.file }
-    );
+    const result = await FileService.fileCreate({
+      File: options.file,
+    });
     fileUploadResult.value = result;
     emit("update:file", result);
     emit("check-validate");
@@ -116,9 +109,7 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
  * @description 删除图片,同样触发update:file事件，更新一个空数据
  * */
 const deleteImg = async () => {
-  await FinancingFileService.financingFileDelete(
-    fileUploadResult.value.id as string
-  );
+  await FileService.fileDelete(fileUploadResult.value.id as string);
   fileUploadResult.value = {};
 
   emit("update:file", fileUploadResult.value);

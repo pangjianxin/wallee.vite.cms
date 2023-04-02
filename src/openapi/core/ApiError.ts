@@ -22,3 +22,4 @@ export class ApiError extends Error {
         this.request = request;
     }
 }
+
