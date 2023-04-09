@@ -12,10 +12,10 @@ export default defineStore(
       // 是否暗黑模式
       isDark: false,
       // 最顶部系统标题栏设置
-      baseBackground: ["#F56C6C", "#F56C6C"],
+      baseBackground: ["#FFFFFF", "#F56C6C"],
       baseTextColor: ["#FFFFFF", "#FFFFFF"],
-      elHeaderHeight: 17,
-      elMainHeight: 82,
+      elHeaderHeight: 13,
+      elMainHeight: 86,
       /* 顶栏 */
       // 顶栏背景色
       navMenuBackground: ["#FFFFFF", "#FFFFFF"],

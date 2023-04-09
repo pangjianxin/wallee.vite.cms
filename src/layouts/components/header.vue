@@ -2,7 +2,7 @@
   <div class="header-wrapper">
     <el-row justify="center" style="width: 100%">
       <el-col :lg="16" :sm="24" class="header-logo">
-        <el-image class="header-img" :src="header"> </el-image>
+        <el-image class="header-img" :src="header" fit="contain"> </el-image>
         <div class="hader-action">
           <el-button type="danger" icon="Avatar" plain>企业登录</el-button>
           <el-button type="success" icon="Menu" plain>企业注册</el-button>
@@ -42,7 +42,7 @@ const theme = useThemeStore();
     padding: var(--ba-main-space) var(--ba-main-space);
     margin-bottom: 0;
     .header-img {
-      height: 8vmin;
+      height: 4vmin;
       margin-right: 2vmin;
       user-select: none;
     }

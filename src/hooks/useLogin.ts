@@ -1,8 +1,8 @@
 import { reactive } from "vue";
 import { FormRules } from "element-plus";
-import { CancelablePromise } from "/@/openapi";
-import { request as __request } from "/@/openapi/core/request";
-import { OpenAPI } from "/@/openapi/core/OpenAPI";
+import { CancelablePromise } from "/@/openapi/financing";
+import { request as __request } from "/@/openapi/financing/core/request";
+import { OpenAPI } from "/@/openapi/financing/core/OpenAPI";
 
 export interface PasswordLogin {
   username: string;
@@ -94,7 +94,7 @@ export const useLogin = () => {
       },
     });
   }
-  
+
   function phoneNumberLogin(requestBody: PhoneNumberLogin): CancelablePromise<{
     access_token: string;
     token_type: string;

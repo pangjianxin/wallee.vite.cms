@@ -5,7 +5,7 @@
     </el-header>
     <el-main class="ba-el-main">
       <el-row justify="center">
-        <el-col :lg="16" :sm="24">
+        <el-col :lg="13" :sm="24">
           <div class="nav-bar">
             <navTabs />
             <navMenu />

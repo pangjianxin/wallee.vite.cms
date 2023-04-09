@@ -8,7 +8,6 @@ import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import Layout from "vite-plugin-vue-layouts";
 import Pages, { PageResolver } from "vite-plugin-pages";
-import svgLoader from "vite-svg-loader";
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), ".", dir);
@@ -21,7 +20,6 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       // have to
       vue(),
-      svgLoader(),
       // have to
       //vueJsx(),
       AutoImport({
@@ -79,7 +77,7 @@ export default defineConfig(({ command, mode }) => {
     server: {
       host: true,
       https: false,
-      port: Number(env["VITE_PORT"]),
+      port: Number(env["VITE_PORT"])
     },
   };
 });

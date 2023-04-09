@@ -8,7 +8,7 @@ import useTagsStore from "/@/store/modules/useTagsStore";
 import { setupLayouts } from "virtual:generated-layouts";
 import generatedRoutes from "~pages";
 import { showError } from "/@/utils/app";
-import useOidcStore from "/@/store/modules/useoidcStore";
+import useOidcStore from "/@/store/modules/useOidcStore";
 
 export const routes = setupLayouts(generatedRoutes);
 

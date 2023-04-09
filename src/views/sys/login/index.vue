@@ -20,7 +20,7 @@ import LoginForm from "/@/views/sys/login/components/passwordLogin.vue";
 import bg from "/@/assets/img/login_left.png";
 import logo from "/@/assets/img/logo.png";
 import { onMounted } from "vue";
-import useoidcStore from "/@/store/modules/useoidcStore";
+import useoidcStore from "/@/store/modules/useOidcStore";
 const appLiteName = import.meta.env["VITE_APP_LITE_NAME"];
 const { clearState } = useoidcStore();
 onMounted(async () => {
@@ -33,7 +33,7 @@ onMounted(async () => {
 </style>
 <route lang="yaml">
 name: loginF
-meta:
+meta: 
   visible: false
   layout: default
 </route>

@@ -6,9 +6,10 @@ import {
   ApplicationSettingConfigurationDto,
   CurrentUserDto,
   CurrentTenantDto,
-} from "/@/openapi/index";
-import { AbpApplicationConfigurationService } from "/@/openapi/index";
-
+  FinancingClient,
+  OpenAPI,
+} from "/@/openapi/financing/index";
+let financingClient = new FinancingClient(OpenAPI);
 export default defineStore("applicationConfig", {
   state: (): ApplicationConfigurationDto => {
     return {
@@ -48,7 +49,9 @@ export default defineStore("applicationConfig", {
   actions: {
     async initConfig() {
       let res =
-        await AbpApplicationConfigurationService.abpApplicationConfigurationGet();
+        await financingClient.abpApplicationConfiguration.abpApplicationConfigurationGet(
+          { includeLocalizationResources: false }
+        );
       if (res) {
         this.store(res);
       }

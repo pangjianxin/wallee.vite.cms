@@ -14,25 +14,12 @@ meta:
     </template>
     <el-tabs :tab-position="'top'" type="border-card">
       <el-tab-pane label="用户密码">
-        <el-form
-          :model="passwordForm"
-          :rules="passwordRules"
-          label-width="120px"
-          ref="passwordFormRef"
-        >
+        <el-form :model="passwordForm" :rules="passwordRules" label-width="120px" ref="passwordFormRef">
           <el-form-item prop="currentPassword" label="当前密码">
-            <el-input
-              v-model="passwordForm.currentPassword"
-              type="password"
-              :show-password="true"
-            ></el-input>
+            <el-input v-model="passwordForm.currentPassword" type="password" :show-password="true"></el-input>
           </el-form-item>
           <el-form-item prop="newPassword" label="新密码">
-            <el-input
-              v-model="passwordForm.newPassword"
-              type="password"
-              :show-password="true"
-            ></el-input>
+            <el-input v-model="passwordForm.newPassword" type="password" :show-password="true"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="Send" @click="submitUpdatePassword">
@@ -42,12 +29,7 @@ meta:
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="用户信息">
-        <el-form
-          :model="profileForm"
-          ref="formRef"
-          :rules="profileRules"
-          :label-width="'120px'"
-        >
+        <el-form :model="profileForm" ref="formRef" :rules="profileRules" :label-width="'120px'">
           <el-form-item label="用户名" prop="userName">
             <el-input v-model="profileForm.userName"></el-input>
           </el-form-item>
@@ -62,8 +44,7 @@ meta:
           </el-form-item>
           <el-form-item>
             <el-row justify="end">
-              <el-button type="primary" icon="Send" @click="submitUpdateProfile"
-                >提交
+              <el-button type="primary" icon="Send" @click="submitUpdateProfile">提交
               </el-button>
             </el-row>
           </el-form-item>
@@ -79,9 +60,12 @@ import {
   ProfileService,
   UpdateProfileDto,
   ChangePasswordInput,
-} from "/@/openapi/index";
+  FinancingClient
+} from "/@/openapi/financing/index";
 import { FormRules, FormInstance, ElNotification } from "element-plus";
 import pageHeader from "/@/components/pageHeader/index.vue";
+import { OpenAPI } from '/@/openapi/financing/index'
+let financingClient = new FinancingClient(OpenAPI);
 let formRef = ref<FormInstance>();
 let profileForm: UpdateProfileDto = reactive({
   userName: "",
@@ -112,7 +96,7 @@ let passwordRules: FormRules = reactive({
 });
 
 onMounted(async () => {
-  var profile = await ProfileService.profileGet();
+  var profile = await financingClient.profile.profileGet();
   profileForm.userName = profile.userName;
   profileForm.email = profile.email;
   profileForm.name = profile.name;
@@ -129,7 +113,7 @@ async function submitUpdateProfile() {
       });
       return;
     } else {
-      await ProfileService.profileUpdate(profileForm);
+      await financingClient.profile.profileUpdate({ requestBody: profileForm });
       ElNotification({
         type: "success",
         title: "提示",
@@ -149,7 +133,7 @@ async function submitUpdatePassword() {
       });
       return;
     } else {
-      await ProfileService.profileChangePassword(passwordForm);
+      await financingClient.profile.profileChangePassword({ requestBody: passwordForm });
       ElNotification({
         type: "success",
         title: "提示",
